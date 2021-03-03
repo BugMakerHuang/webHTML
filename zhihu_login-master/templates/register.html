@@ -34,7 +34,6 @@
 				</li>
 			</ul>
 			<button type="submit" class="submit_btn" id="btnSubmit" onclick="sendSubmit()"  style="background:#000000">注册知乎</button>
-			<span class="agreement-tip">点击「注册」按钮，即代表你同意<a href="javascript:;">《知乎协议》</a></span>
 		</form>
 	</div>
 	<script src="../assets/libs/jquery-1.12.4/jquery.min.js"></script>
@@ -60,17 +59,6 @@
 			requestAnimationFrame(update);
 		};
 		requestAnimationFrame(update);
-	</script>	
-	<script>
-		$(".download_btn").click(function(){
-			if($(".QRcode").css("display")=="none"){
-				$(".QRcode").show();
-				$(".download_btn").text("关闭二维码");
-			}else{
-				$(".QRcode").hide();
-				$(".download_btn").text("下载知乎App");
-			}
-		});	
 	</script>
 	<script>
 		$(function(){

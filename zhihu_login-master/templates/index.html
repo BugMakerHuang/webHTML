@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- 引入 ECharts 文件 -->
+    <script src="../assets/dist/echarts.min.js"></script>
+    <script src="../assets/dist/jquery.js"></script>
+</head>
+<body>
+<!-- 为ECharts 准备一个具备大小 (宽高) 的 DOM -->
+<div id="main" style="width:600px;height:400px;"></div>
+<script type="text/javascript">
+               var ROOT_PATH = 'https://cdn.jsdelivr.net/gh/apache/echarts-website@asf-site/examples';
+               //基于准备好的dom,初始化echarts实例
+               var myChart = echarts.init(document.getElementById('main'));
+               // 指定图表的配置项和数据
+               var option;
+               $.get(ROOT_PATH + './assets/dist/allMap/china.json',function(data) {
+                   var lines = data.map(function (track) {
+                       coords: track.map(function (seg, idx) {
+                           return seg.coord;
+                       })
+                   });
+
+                   // 使用刚指定的配置项和数据显示图表。
+                   myChart.setOption(option = {
+                       bmap: {
+                           center: [120.13066322374, 30.240018034923],
+                           zoom: 14,
+                           roam: true,
+                           mapStyle: {
+                               styleJson: [{
+                                   'featureType': 'water',
+                                   'elementType': 'all',
+                                   'stylers': {
+                                       'color': '#d1d1d1'
+                                   }
+                               }, {
+                                   'featureType': 'land',
+                                   'elementType': 'all',
+                                   'stylers': {
+                                       'color': '#f3f3f3'
+                                   }
+                               }, {
+                                   'featureType': 'railway',
+                                   'elementType': 'all',
+                                   'stylers': {
+                                       'visibility': 'off'
+                                   }
+                               }, {
+                                   'featureType': 'highway',
+                                   'elementType': 'all',
+                                   'stylers': {
+                                       'color': '#fdfdfd'
+                                   }
+                               }, {
+                                   'featureType': 'highway',
+                                   'elementType': 'labels',
+                                   'stylers': {
+                                       'visibility': 'off'
+                                   }
+                               }, {
+                                   'featureType': 'arterial',
+                                   'elementType': 'geometry',
+                                   'stylers': {
+                                       'color': '#fefefe'
+                                   }
+                               }, {
+                                   'featureType': 'arterial',
+                                   'elementType': 'geometry.fill',
+                                   'stylers': {
+                                       'color': '#fefefe'
+                                   }
+                               }, {
+                                   'featureType': 'poi',
+                                   'elementType': 'all',
+                                   'stylers': {
+                                       'visibility': 'off'
+                                   }
+                               }, {
+                                   'featureType': 'green',
+                                   'elementType': 'all',
+                                   'stylers': {
+                                       'visibility': 'off'
+                                   }
+                               }, {
+                                   'featureType': 'subway',
+                                   'elementType': 'all',
+                                   'stylers': {
+                                       'visibility': 'off'
+                                   }
+                               }, {
+                                   'featureType': 'manmade',
+                                   'elementType': 'all',
+                                   'stylers': {
+                                       'color': '#d1d1d1'
+                                   }
+                               }, {
+                                   'featureType': 'local',
+                                   'elementType': 'all',
+                                   'stylers': {
+                                       'color': '#d1d1d1'
+                                   }
+                               }, {
+                                   'featureType': 'arterial',
+                                   'elementType': 'labels',
+                                   'stylers': {
+                                       'visibility': 'off'
+                                   }
+                               }, {
+                                   'featureType': 'boundary',
+                                   'elementType': 'all',
+                                   'stylers': {
+                                       'color': '#fefefe'
+                                   }
+                               }, {
+                                   'featureType': 'building',
+                                   'elementType': 'all',
+                                   'stylers': {
+                                       'color': '#d1d1d1'
+                                   }
+                               }, {
+                                   'featureType': 'label',
+                                   'elementType': 'labels.text.fill',
+                                   'stylers': {
+                                       'color': '#999999'
+                                   }
+                               }]
+                           }
+                       },
+                       series: [{
+                           type: 'lines',
+                           coordinateSystem: 'bmap',
+                           data: lines,
+                           polyline: true,
+                           lineStyle: {
+                               color: 'purple',
+                               opacity: 0.6,
+                               width: 1
+                           }
+                       }]
+                   })
+               }
+</script>
+</body>
+</html>
