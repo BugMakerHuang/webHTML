@@ -5,142 +5,202 @@
     <!-- 引入 ECharts 文件 -->
     <script src="../assets/dist/echarts.min.js"></script>
     <script src="../assets/dist/jquery.js"></script>
+    <script src="../assets/dist/allMap/china.js"></script>
 </head>
+<style>
+    #main{
+        width:700px;
+        height:600px;
+    }
+    #fluenceChart{
+        width: 550px;
+        height: 250px;
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+</style>
 <body>
 <!-- 为ECharts 准备一个具备大小 (宽高) 的 DOM -->
-<div id="main" style="width:600px;height:400px;"></div>
+<div id="main"></div>
+<div id="fluenceChart"></div>
 <script type="text/javascript">
-               var ROOT_PATH = 'https://cdn.jsdelivr.net/gh/apache/echarts-website@asf-site/examples';
-               //基于准备好的dom,初始化echarts实例
-               var myChart = echarts.init(document.getElementById('main'));
-               // 指定图表的配置项和数据
-               var option;
-               $.get(ROOT_PATH + './assets/dist/allMap/china.json',function(data) {
-                   var lines = data.map(function (track) {
-                       coords: track.map(function (seg, idx) {
-                           return seg.coord;
-                       })
-                   });
-
-                   // 使用刚指定的配置项和数据显示图表。
-                   myChart.setOption(option = {
-                       bmap: {
-                           center: [120.13066322374, 30.240018034923],
-                           zoom: 14,
-                           roam: true,
-                           mapStyle: {
-                               styleJson: [{
-                                   'featureType': 'water',
-                                   'elementType': 'all',
-                                   'stylers': {
-                                       'color': '#d1d1d1'
-                                   }
-                               }, {
-                                   'featureType': 'land',
-                                   'elementType': 'all',
-                                   'stylers': {
-                                       'color': '#f3f3f3'
-                                   }
-                               }, {
-                                   'featureType': 'railway',
-                                   'elementType': 'all',
-                                   'stylers': {
-                                       'visibility': 'off'
-                                   }
-                               }, {
-                                   'featureType': 'highway',
-                                   'elementType': 'all',
-                                   'stylers': {
-                                       'color': '#fdfdfd'
-                                   }
-                               }, {
-                                   'featureType': 'highway',
-                                   'elementType': 'labels',
-                                   'stylers': {
-                                       'visibility': 'off'
-                                   }
-                               }, {
-                                   'featureType': 'arterial',
-                                   'elementType': 'geometry',
-                                   'stylers': {
-                                       'color': '#fefefe'
-                                   }
-                               }, {
-                                   'featureType': 'arterial',
-                                   'elementType': 'geometry.fill',
-                                   'stylers': {
-                                       'color': '#fefefe'
-                                   }
-                               }, {
-                                   'featureType': 'poi',
-                                   'elementType': 'all',
-                                   'stylers': {
-                                       'visibility': 'off'
-                                   }
-                               }, {
-                                   'featureType': 'green',
-                                   'elementType': 'all',
-                                   'stylers': {
-                                       'visibility': 'off'
-                                   }
-                               }, {
-                                   'featureType': 'subway',
-                                   'elementType': 'all',
-                                   'stylers': {
-                                       'visibility': 'off'
-                                   }
-                               }, {
-                                   'featureType': 'manmade',
-                                   'elementType': 'all',
-                                   'stylers': {
-                                       'color': '#d1d1d1'
-                                   }
-                               }, {
-                                   'featureType': 'local',
-                                   'elementType': 'all',
-                                   'stylers': {
-                                       'color': '#d1d1d1'
-                                   }
-                               }, {
-                                   'featureType': 'arterial',
-                                   'elementType': 'labels',
-                                   'stylers': {
-                                       'visibility': 'off'
-                                   }
-                               }, {
-                                   'featureType': 'boundary',
-                                   'elementType': 'all',
-                                   'stylers': {
-                                       'color': '#fefefe'
-                                   }
-                               }, {
-                                   'featureType': 'building',
-                                   'elementType': 'all',
-                                   'stylers': {
-                                       'color': '#d1d1d1'
-                                   }
-                               }, {
-                                   'featureType': 'label',
-                                   'elementType': 'labels.text.fill',
-                                   'stylers': {
-                                       'color': '#999999'
-                                   }
-                               }]
-                           }
+               $.get('../assets/dist/allMap/china.json',function (chinaJson) {
+                   echarts.registerMap('china',chinaJson);
+                   var chart = echarts.init(document.getElementById('main'));
+                   chart.setOption({
+                       title: [{
+                          text: '全国分布图'
+                       }],
+                       tooltip:{
+                         trigger: 'item',
+                         formatter: '{b}<br/>{c} (人)'
                        },
                        series: [{
-                           type: 'lines',
-                           coordinateSystem: 'bmap',
-                           data: lines,
-                           polyline: true,
-                           lineStyle: {
-                               color: 'purple',
-                               opacity: 0.6,
-                               width: 1
+                           type: 'map',
+                           map: 'china',
+                           data: [
+                               {name: '黑龙江',value:23123123},
+                               {name: '广东' ,value: 23234}
+                           ]
+                       }],
+                       visualMap: {
+                           min: 200,
+                           max: 30000000,
+                           text: ['High','Low'],
+                           realtime: true,
+                           calculable: true,
+                           inRange:{
+                               color: ['lightskyblue','yellow','orangered']
                            }
-                       }]
-                   })
-               }
+                       }
+                   });
+               });
+
+
+               //变换图表
+               var ROOT_PATH = 'https://cdn.jsdelivr.net/gh/apache/echarts-website@asf-site/examples';
+
+               var chartDom = document.getElementById('fluenceChart');
+               var myChart = echarts.init(chartDom);
+               var option;
+
+               var updateFrequency = 2000;
+               var dimension = 0;
+
+               var countryColors = {"Australia":"#00008b","Canada":"#f00","China":"#ffde00","Cuba":"#002a8f","Finland":"#003580","France":"#ed2939","Germany":"#000","Iceland":"#003897","India":"#f93","Japan":"#bc002d","North Korea":"#024fa2","South Korea":"#000","New Zealand":"#00247d","Norway":"#ef2b2d","Poland":"#dc143c","Russia":"#d52b1e","Turkey":"#e30a17","United Kingdom":"#00247d","United States":"#b22234"};
+
+               $.when(
+                   $.getJSON('https://cdn.jsdelivr.net/npm/emoji-flags@1.3.0/data.json'),
+                   $.getJSON(ROOT_PATH + '/data/asset/data/life-expectancy-table.json')
+               ).done(function (res0, res1) {
+                   var flags = res0[0];
+                   var data = res1[0];
+                   var years = [];
+                   for (var i = 0; i < data.length; ++i) {
+                       if (years.length === 0 || years[years.length - 1] !== data[i][4]) {
+                           years.push(data[i][4]);
+                       }
+                   }
+
+                   function getFlag(countryName) {
+                       if (!countryName) {
+                           return '';
+                       }
+                       return (flags.find(function (item) {
+                           return item.name === countryName;
+                       }) || {}).emoji;
+                   }
+                   var startIndex = 10;
+                   var startYear = years[startIndex];
+
+                   var option = {
+                       grid: {
+                           top: 10,
+                           bottom: 30,
+                           left: 50,
+                           right: 80
+                       },
+                       xAxis: {
+                           max: 'dataMax',
+                           label: {
+                               formatter: function (n) {
+                                   return Math.round(n);
+                               }
+                           }
+                       },
+                       dataset: {
+                           source: data.slice(1).filter(function (d) {
+                               return d[4] === startYear;
+                           })
+                       },
+                       yAxis: {
+                           type: 'category',
+                           inverse: true,
+                           max: 10,
+                           axisLabel: {
+                               show: true,
+                               textStyle: {
+                                   fontSize: 6
+                               },
+                               formatter: function (value) {
+                                   return value + '{flag|' + getFlag(value) + '}';
+                               },
+                               rich: {
+                                   flag: {
+                                       fontSize: 5,
+                                       padding: 6
+                                   }
+                               }
+                           },
+                           animationDuration: 300,
+                           animationDurationUpdate: 300
+                       },
+                       series: [{
+                           realtimeSort: true,
+                           seriesLayoutBy: 'column',
+                           type: 'bar',
+                           itemStyle: {
+                               color: function (param) {
+                                   return countryColors[param.value[3]] || '#5470c6';
+                               }
+                           },
+                           encode: {
+                               x: dimension,
+                               y: 3
+                           },
+                           label: {
+                               show: true,
+                               precision: 1,
+                               position: 'right',
+                               valueAnimation: true,
+                               fontFamily: 'monospace'
+                           }
+                       }],
+                       // Disable init animation.
+                       animationDuration: 0,
+                       animationDurationUpdate: updateFrequency,
+                       animationEasing: 'linear',
+                       animationEasingUpdate: 'linear',
+                       graphic: {
+                           elements: [{
+                               type: 'text',
+                               right: 160,
+                               bottom: 60,
+                               style: {
+                                   text: startYear,
+                                   font: 'bolder 80px monospace',
+                                   fill: 'rgba(100, 100, 100, 0.25)'
+                               },
+                               z: 100
+                           }]
+                       }
+                   };
+
+                   // console.log(option);
+                   myChart.setOption(option);
+
+                   for (var i = startIndex; i < years.length - 1; ++i) {
+                       (function (i) {
+                           setTimeout(function () {
+                               updateYear(years[i + 1]);
+                           }, (i - startIndex) * updateFrequency);
+                       })(i);
+                   }
+
+                   function updateYear(year) {
+                       var source = data.slice(1).filter(function (d) {
+                           return d[4] === year;
+                       });
+                       option.series[0].data = source;
+                       option.graphic.elements[0].style.text = year;
+                       myChart.setOption(option);
+                   }
+               })
+
+               option && myChart.setOption(option);
+
+
 </script>
 </body>
-</html>
+</html>}
